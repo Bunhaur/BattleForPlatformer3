@@ -24,14 +24,14 @@ public abstract class Spell : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        _button.onClick.AddListener(ActivateSpell);
-        Ended += DiactivateSpell;
+        _button.onClick.AddListener(Activate);
+        Ended += Diactivate;
     }
 
     protected virtual void OnDisable()
     {
-        _button.onClick.RemoveListener(ActivateSpell);
-        Ended -= DiactivateSpell;
+        _button.onClick.RemoveListener(Activate);
+        Ended -= Diactivate;
     }
 
     private IEnumerator StartFillImageLogic()
@@ -42,7 +42,7 @@ public abstract class Spell : MonoBehaviour
 
         yield return _fillImageWork = StartCoroutine(FillPicture(_imageMaxFill, _cooldown));
 
-        DiactivateSpell();
+        Diactivate();
     }
 
     private IEnumerator FillPicture(float target, float time)
@@ -65,13 +65,13 @@ public abstract class Spell : MonoBehaviour
         _image.fillMethod = Image.FillMethod.Radial360;
     }
 
-    protected virtual void ActivateSpell()
+    protected virtual void Activate()
     {
         _button.interactable = false;
         _fillImageWork = StartCoroutine(StartFillImageLogic());
     }
 
-    protected virtual void DiactivateSpell()
+    protected virtual void Diactivate()
     {
         _button.interactable = true;
     }
