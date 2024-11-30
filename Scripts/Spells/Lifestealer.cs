@@ -60,6 +60,7 @@ public class Lifestealer : Spell
     protected override void Init()
     {
         base.Init();
+        
         DisableAura();
 
         _delay = new WaitForSeconds(_delayNextLifeSteal);
