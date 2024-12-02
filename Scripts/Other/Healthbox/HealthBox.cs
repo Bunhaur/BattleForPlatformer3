@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HealthBox : MonoBehaviour
 {
-    public readonly int HealthRecovery = 50;
+    [field: SerializeField] public int HealthRecovery { get; private set; } = 50;
 
     public void Remove()
     {

@@ -17,7 +17,7 @@ public class Lifestealer : Spell
 
         Ended += DisableAura;
         _aura.Triggered += StartLogic;
-        _button.onClick.AddListener(EnableAura);
+        Button.onClick.AddListener(EnableAura);
     }
 
     protected override void OnDisable()
@@ -25,7 +25,18 @@ public class Lifestealer : Spell
         base.OnDisable();
 
         Ended -= DisableAura;
-        _button.onClick.RemoveListener(EnableAura);
+        _aura.Triggered -= StartLogic;
+        Button.onClick.RemoveListener(EnableAura);
+    }
+
+    protected override void Init()
+    {
+        base.Init();
+
+        DisableAura();
+
+        _delay = new WaitForSeconds(_delayNextLifeSteal);
+        _canDamage = true;
     }
 
     private void EnableAura()
@@ -49,20 +60,11 @@ public class Lifestealer : Spell
 
     private IEnumerator Steal(EnemyHealth enemyHealth)
     {
-        enemyHealth.ChangeValue(-_lifeStealValue);
-        _playerHealth.ChangeValue(_lifeStealValue);
+        enemyHealth.Hit(_lifeStealValue);
+        PlayerHealth.Heal(_lifeStealValue);
 
         yield return _delay;
 
-        _canDamage = true;
-    }
-
-    protected override void Init()
-    {
-        base.Init();
-        DisableAura();
-
-        _delay = new WaitForSeconds(_delayNextLifeSteal);
         _canDamage = true;
     }
 }

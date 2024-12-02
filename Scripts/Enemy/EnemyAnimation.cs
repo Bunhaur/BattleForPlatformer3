@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class EnemyAnimation : MonoBehaviour
 {
-    private const string HitName = "Hit";
+    private const string Hit = nameof(Hit);
 
     private Animator _animator;
 
@@ -14,6 +14,6 @@ public class EnemyAnimation : MonoBehaviour
 
     public void PlayAnimationHit()
     {
-        _animator.SetTrigger(HitName);
+        _animator.SetTrigger(Hit);
     }
 }

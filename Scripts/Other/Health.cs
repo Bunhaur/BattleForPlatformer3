@@ -3,22 +3,31 @@ using UnityEngine;
 
 public abstract class Health : MonoBehaviour
 {
-    [field: SerializeField] public float MaxValue { get; private set; } = 100;
-    [field: SerializeField] public float CurrentValue { get; private set; } = 85;
-
-    protected float _minValue;
-    protected Coroutine _timeoutDamageWork;
+    protected float MinValue;
+    protected Coroutine TimeoutDamageWork;
 
     public event Action Dead;
     public event Action<float> Changed;
 
-    public void ChangeValue(float value)
+    [field: SerializeField] public float MaxValue { get; private set; } = 100;
+    [field: SerializeField] public float CurrentValue { get; private set; } = 85;
+
+    public void Heal(float value)
     {
-        CurrentValue = Mathf.Clamp(CurrentValue += value, _minValue, MaxValue);
+        ChangeValue(value);
+    }
 
-        Changed?.Invoke(CurrentValue);
+    public void Hit(float value)
+    {
+        ChangeValue(-value);
 
-        if (CurrentValue == _minValue)
+        if (CurrentValue == MinValue)
             Dead?.Invoke();
+    }
+
+    private void ChangeValue(float value)
+    {
+        CurrentValue = Mathf.Clamp(CurrentValue += value, MinValue, MaxValue);
+        Changed?.Invoke(CurrentValue);
     }
 }

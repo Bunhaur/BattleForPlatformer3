@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     private PlayerHealth _health;
     private float _horizontal;
 
-    [field: SerializeField] public float Damage = 15;
+    [field: SerializeField] public float Damage { get; private set; } = 15;
 
     private void Awake()
     {
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
     private void TakeHit(Enemy enemy)
     {
         _jumpController.Jump();
-        _health.ChangeValue(-enemy.Damage);
+        _health.Hit(enemy.Damage);
     }
 
     private void Flip()
@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
 
     private void TakeHealthBox(HealthBox healthBox)
     {
-        _health.ChangeValue(healthBox.HealthRecovery);
+        _health.Heal(healthBox.HealthRecovery);
         healthBox.Remove();
     }
 

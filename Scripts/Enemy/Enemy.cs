@@ -4,25 +4,25 @@ using UnityEngine;
 [RequireComponent (typeof(EnemyAnimation))]
 public class Enemy : MonoBehaviour
 {
-    protected EnemyHealth _health;
+    protected EnemyHealth Health;
     private EnemyAnimation _animation;
 
     [field: SerializeField] public float Damage { get; private set; } = 15;
 
     private void Awake()
     {
-        _health = GetComponent<EnemyHealth>();
+        Health = GetComponent<EnemyHealth>();
         _animation = GetComponent<EnemyAnimation>();
     }
 
     private void OnEnable()
     {
-        _health.Dead += Die;
+        Health.Dead += Die;
     }
 
     private void OnDisable()
     {
-        _health.Dead -= Die;
+        Health.Dead -= Die;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour
         if(collision.collider.TryGetComponent(out Player player))
         {
             _animation.PlayAnimationHit();
-            _health.ChangeValue(-player.Damage);
+            Health.Hit(player.Damage);
         }
     }
 

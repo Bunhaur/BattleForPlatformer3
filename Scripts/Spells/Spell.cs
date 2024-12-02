@@ -6,16 +6,16 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public abstract class Spell : MonoBehaviour
 {
-    [SerializeField] protected PlayerHealth _playerHealth;
-    [SerializeField] protected Button _button;
-    [SerializeField] protected float _cooldown;
-    [SerializeField] protected float _actionTime;
-
-    public event Action Ended;
+    [SerializeField] protected PlayerHealth PlayerHealth;
+    [SerializeField] protected Button Button;
+    [SerializeField] protected float Cooldown = 4;
+    [SerializeField] protected float ActionTime = 6;
 
     private Image _image;
     private Coroutine _fillImageWork;
     private float _imageMaxFill = 1;
+
+    public event Action Ended;
 
     protected virtual void Awake()
     {
@@ -24,23 +24,40 @@ public abstract class Spell : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        _button.onClick.AddListener(Activate);
+        Button.onClick.AddListener(Activate);
         Ended += Diactivate;
     }
 
     protected virtual void OnDisable()
     {
-        _button.onClick.RemoveListener(Activate);
+        Button.onClick.RemoveListener(Activate);
         Ended -= Diactivate;
+    }
+
+    protected virtual void Init()
+    {
+        _image = GetComponent<Image>();
+        _image.fillMethod = Image.FillMethod.Radial360;
+    }
+
+    protected virtual void Activate()
+    {
+        Button.interactable = false;
+        _fillImageWork = StartCoroutine(StartFillImageLogic());
+    }
+
+    protected virtual void Diactivate()
+    {
+        Button.interactable = true;
     }
 
     private IEnumerator StartFillImageLogic()
     {
-        yield return _fillImageWork = StartCoroutine(FillPicture(0, _actionTime));
+        yield return StartCoroutine(FillPicture(0, ActionTime));
 
         Ended?.Invoke();
 
-        yield return _fillImageWork = StartCoroutine(FillPicture(_imageMaxFill, _cooldown));
+        yield return StartCoroutine(FillPicture(_imageMaxFill, Cooldown));
 
         Diactivate();
     }
@@ -57,22 +74,5 @@ public abstract class Spell : MonoBehaviour
     private float SmoothValueChange(float target, float time)
     {
         return Mathf.MoveTowards(_image.fillAmount, target, Time.deltaTime / time);
-    }
-
-    protected virtual void Init()
-    {
-        _image = GetComponent<Image>();
-        _image.fillMethod = Image.FillMethod.Radial360;
-    }
-
-    protected virtual void Activate()
-    {
-        _button.interactable = false;
-        _fillImageWork = StartCoroutine(StartFillImageLogic());
-    }
-
-    protected virtual void Diactivate()
-    {
-        _button.interactable = true;
     }
 }
